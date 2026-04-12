@@ -1,0 +1,117 @@
+<div class="main-container">
+  <!-- Header / Search Section -->
+  <div class="hero max-w-4xl mx-auto align-center text-center p-6">
+    <h1 class="title">
+      Yoink<span class="text-pink">Tune</span>
+    </h1>
+
+    <div class="search-box glass-panel p-5">
+      <div class="controls flex justify-content-center align-items-center gap-3 mb-4">
+        <p-selectButton 
+          [options]="platformOptions" 
+          [(ngModel)]="selectedPlatform" 
+          optionLabel="label" 
+          optionValue="value">
+        </p-selectButton>
+      </div>
+
+      <div class="input-group p-inputgroup">
+        <input 
+          type="text" 
+          pInputText 
+          placeholder="Busca una canción o pega una URL..." 
+          [(ngModel)]="query" 
+          (keydown.enter)="search()" 
+          class="w-full search-input" 
+        />
+        <button 
+          type="button" 
+          pButton 
+          icon="pi pi-search" 
+          class="p-button-primary search-btn" 
+          [loading]="loading"
+          (click)="search()">
+        </button>
+      </div>
+      
+      <p *ngIf="errorMsg" class="error-text mt-3 text-red-400">
+        <i class="pi pi-exclamation-triangle"></i> {{ errorMsg }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Loading Skeletons -->
+  <div class="results-container max-w-4xl mx-auto p-4" *ngIf="loading && results.length === 0">
+    <div class="result-list flex flex-column gap-4">
+      <p-card *ngFor="let i of [1,2,3]" styleClass="glass-panel result-item p-3 mb-4">
+        <div class="flex flex-column md:flex-row gap-4 align-items-center">
+          <p-skeleton width="200px" height="112px" styleClass="border-round"></p-skeleton>
+          <div class="info-wrapper flex-1 text-left w-full">
+            <p-skeleton width="80%" height="1.5rem" styleClass="mb-2"></p-skeleton>
+            <p-skeleton width="40%" height="1rem" styleClass="mb-3"></p-skeleton>
+            <div class="flex gap-2">
+              <p-skeleton width="4rem" height="1.2rem" styleClass="border-round"></p-skeleton>
+              <p-skeleton width="6rem" height="1.2rem" styleClass="border-round"></p-skeleton>
+            </div>
+          </div>
+          <div class="action-wrapper flex flex-column align-items-end justify-content-center p-3">
+            <p-skeleton width="150px" height="3rem"></p-skeleton>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div class="results-container max-w-4xl mx-auto p-4" *ngIf="results.length > 0">
+    <div class="result-list flex flex-column gap-4">
+      <p-card *ngFor="let res of results" styleClass="glass-panel result-item p-3 mb-4">
+        <div class="flex flex-column md:flex-row gap-4 align-items-center">
+          
+          <div class="thumbnail-wrapper relative">
+            <img 
+              [src]="res.thumbnail || 'assets/placeholder.jpg'" 
+              alt="Cover" 
+              class="cover-img border-round" 
+            />
+            <div class="duration-badge absolute bottom-0 right-0 py-1 px-2 mb-2 mr-2 border-round text-sm bg-black-alpha-70">
+              {{ formatDuration(res.duration) }}
+            </div>
+          </div>
+
+          <div class="info-wrapper flex-1 text-left">
+            <h3 class="mt-0 mb-2 text-xl font-bold line-clamp-2 text-white">{{ res.title }}</h3>
+            <p class="text-gray-400 m-0"><i class="pi pi-user mr-2"></i>{{ res.uploader }}</p>
+            <div class="badges mt-3 flex gap-2">
+              <span class="badge surface-700 text-white px-2 py-1 border-round text-xs">
+                <i class="pi pi-{{ res.platform === 'youtube' ? 'youtube' : 'cloud' }} mr-1"></i>
+                {{ res.platform | uppercase }}
+              </span>
+              <span class="badge bg-pink-700 text-white px-2 py-1 border-round text-xs font-bold">
+                HQ 320kbps
+              </span>
+            </div>
+          </div>
+
+          <div class="action-wrapper flex flex-column align-items-end justify-content-center p-3">
+            <button 
+              pButton 
+              pRipple 
+              label="Descargar MP3" 
+              icon="pi pi-download" 
+              class="p-button-pink p-button-outlined hover:p-button-solid transition-colors"
+              [loading]="downloadingId === res.id"
+              (click)="download(res)">
+            </button>
+            <p-progressBar 
+              *ngIf="downloadingId === res.id" 
+              mode="indeterminate" 
+              [style]="{'height': '4px', 'width': '100%', 'margin-top': '10px'}">
+            </p-progressBar>
+          </div>
+          
+        </div>
+      </p-card>
+    </div>
+  </div>
+</div>

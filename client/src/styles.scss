@@ -1,0 +1,56 @@
+@import "primeicons/primeicons.css";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #050505;
+  color: #fff;
+  min-height: 100vh;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 50%;
+  height: 50%;
+  background: radial-gradient(circle, rgba(100,50,200,0.4) 0%, rgba(0,0,0,0) 70%);
+  filter: blur(80px);
+  z-index: -1;
+  border-radius: 50%;
+}
+
+body::after {
+  content: '';
+  position: absolute;
+  bottom: -20%;
+  right: -10%;
+  width: 40%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(255,0,127,0.3) 0%, rgba(0,0,0,0) 70%);
+  filter: blur(80px);
+  z-index: -1;
+  border-radius: 50%;
+}
+
+* {
+  box-sizing: inherit;
+}
+
+/* Glassmorphism utils */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+.p-inputtext, .p-button {
+  font-family: 'Inter', system-ui, sans-serif;
+}
