@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../environments/environment';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -58,7 +59,7 @@ export class AppComponent {
     this.results = [];
     this.errorMsg = '';
     
-    this.http.get<SearchResult[]>('http://localhost:3000/api/search', {
+    this.http.get<SearchResult[]>(`${environment.apiUrl}/api/search`, {
       params: { q: this.query, platform: this.selectedPlatform }
     }).subscribe({
       next: (res) => {
@@ -76,7 +77,7 @@ export class AppComponent {
   download(result: SearchResult) {
     this.downloadingId = result.id;
     
-    const url = `http://localhost:3000/api/download?url=${encodeURIComponent(result.url)}&title=${encodeURIComponent(result.title)}`;
+    const url = `${environment.apiUrl}/api/download?url=${encodeURIComponent(result.url)}&title=${encodeURIComponent(result.title)}`;
     
     // Create a temporary anchor element to trigger the download
     const a = document.createElement('a');
