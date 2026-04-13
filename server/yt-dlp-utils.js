@@ -1,7 +1,8 @@
 const { spawn } = require('child_process');
 const path = require('path');
-
-const binPath = path.resolve(__dirname, 'node_modules', 'youtube-dl-exec', 'bin', 'yt-dlp.exe');
+const os = require('os');
+const binName = os.platform() === 'win32' ? 'yt-dlp.exe' : 'yt-dlp';
+const binPath = path.resolve(__dirname, 'node_modules', 'youtube-dl-exec', 'bin', binName);
 
 const search = (query, platform = 'youtube', limit = 10) => {
   return new Promise((resolve, reject) => {
@@ -18,6 +19,11 @@ const search = (query, platform = 'youtube', limit = 10) => {
     const child = spawn(binPath, args);
     let stdout = '';
     let stderr = '';
+
+    child.on('error', (err) => {
+      console.error('Spawn error:', err);
+      reject(err);
+    });
 
     child.stdout.on('data', (data) => {
       stdout += data;
@@ -69,6 +75,13 @@ const getAudioStream = (url, res) => {
   ];
 
   const child = spawn(binPath, args);
+
+  child.on('error', (err) => {
+    console.error('Spawn error:', err);
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Failed to stream' });
+    }
+  });
 
   child.stdout.pipe(res);
 
